@@ -18,13 +18,32 @@ Sample external plugin for [mydeck](https://github.com/ktat/mydeck). Demonstrate
 
 ## Install
 
+The plugin must land in the **same Python environment as `mydeck`**, because that's where the dotted-path loader will look for it.
+
+### If you installed mydeck with `pip install`
+
 ```
 pip install .            # from this directory
 # or
-pip install git+https://github.com/<your-fork>/mydeck-hello-plugin.git
+pip install git+https://github.com/ktat/mydeck-hello-plugin.git
 ```
 
-This installs `mydeck_hello` into the same environment as `mydeck`, which is what the dotted-path loader needs.
+### If you installed mydeck with `uv tool install`
+
+`uv tool install` puts `mydeck` in its own isolated venv, so a plain `pip install` won't make the plugin visible to it. Target the tool's Python explicitly:
+
+```
+uv pip install --python ~/.local/share/uv/tools/mydeck/bin/python3 \
+  git+https://github.com/ktat/mydeck-hello-plugin.git
+```
+
+Or reinstall `mydeck` with the plugin included from the start:
+
+```
+uv tool install --reinstall --with git+https://github.com/ktat/mydeck-hello-plugin.git mydeck
+```
+
+After installing, restart mydeck (`mydeck --restart -d`) — Python reads `site-packages` only at interpreter startup, so a running process won't see the new plugin until it restarts.
 
 ## Use
 
